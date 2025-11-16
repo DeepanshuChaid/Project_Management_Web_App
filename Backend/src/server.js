@@ -9,6 +9,8 @@ import passport from "passport"
 import authRoutes from "./routes/auth.routes.js"
 import session from "express-session"
 import prisma from "./prisma.js"
+import userRoutes from "./routes/user.routes.js"
+import isAuthenticatedMiddleware from "./middleware/isAuthenticatedMiddleware.js"
 
 
 const BASE_PATH = config.BASE_PATH
@@ -46,10 +48,12 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(errorHandlerMiddleware)
+
 
 app.use(`${BASE_PATH}/auth`, authRoutes)
+app.use(`${BASE_PATH}/user`, isAuthenticatedMiddleware, userRoutes)
 
-app.use(errorHandlerMiddleware)
 
 app.get("/", (req, res) => {
   res.send("Hello World")
@@ -60,6 +64,7 @@ app.listen(PORT, async () => {
   const data = await prisma.user.findMany({include: {accounts: true, workspaces: true}})
   console.log(data)
   console.log("Backend Callback", config.GOOGLE_CALLBACK_URL)
+
 })
 
 

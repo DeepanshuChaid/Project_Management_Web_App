@@ -231,7 +231,14 @@ export const verfiyUserService = async (email, password, provider = "EMAIL") => 
 
   if (!isPasswordValid) throw new Error("Invalid email or password")
 
+  // Update last login
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLogin: new Date() }
+  })
+
   
   return user
   
 }
+

@@ -1,5 +1,5 @@
 // src/config/passport.config.js
-import passport, { session } from 'passport';
+import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { config } from './app.config.js';
 import { loginOrCreateAccountService, verfiyUserService } from '../service/auth.service.js';
@@ -84,12 +84,35 @@ passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        accounts: true,
-        workspaces: true,
-        member: {
-          include: {
-            workspace: true,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        profilePicture: true,
+        currentWorkspace: true,
+        isActive: true,
+        accounts: {
+          select: {
+            id: true,
+            provider: true,
+          }
+        },
+        members: {
+          select: {
+            workspaceId: true,
+            workspace: {
+              select: {
+                id: true,
+                name: true,
+                inviteCode: true,
+              }
+            },
+            role: {
+              select: {
+                name: true,
+                permissions: true,
+              }
+            }
           },
         },
       },
