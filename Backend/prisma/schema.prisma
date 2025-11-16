@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = "env(POSTGRESS_URL)"
+  directUrl = "env(DIRECT_URL)"
+}
+
+/**
+ * Enums
+ */
+enum Provider {
+  GOOGLE
+  EMAIL
+}
+
+enum Status {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Roles {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum Permissions {
+  CREATE_WORKSPACE
+  DELETE_WORKSPACE
+  EDIT_WORKSPACE
+  MANAGE_WORKSPACE_SETTINGS
+
+  ADD_MEMBER
+  CHANGE_MEMBER_ROLE
+  REMOVE_MEMBER
+
+  CREATE_PROJECT
+  EDIT_PROJECT
+  DELETE_PROJECT
+
+  CREATE_TASK
+  EDIT_TASK
+  UPDATE_TASK
+
+  VIEW_ONLY
+}
+
+/**
+ * Models
+ */
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  name             String?
+  email            String    @unique
+  password         String?
+  profilePicture   String?
+  isActive         Boolean   @default(true)
+  lastLogin        DateTime?
+  currentWorkspace String?   @db.Uuid
+
+  accounts        Account[]
+  workspaces      Workspace[] @relation("UserWorkspaces") // as owner
+  projectsCreated Project[]   @relation("ProjectCreatedBy")
+  tasksCreated    Task[]      @relation("TaskCreatedBy")
+  tasksAssigned   Task[]      @relation("TaskAssignedTo")
+  members         Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id           String    @id @default(uuid()) @db.Uuid
+  provider     Provider
+  providerId   String    @unique
+  refreshToken String?
+  tokenExpiry  DateTime?
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Workspace {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  inviteCode  String  @unique
+
+  ownerId String @db.Uuid
+  owner   User   @relation("UserWorkspaces", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  projects Project[]
+  tasks    Task[]
+  members  Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String
+  emoji       String? @default("📈")
+  description String?
+
+  workspaceId String    @db.Uuid
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  createdById String @db.Uuid
+  createdBy   User   @relation("ProjectCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          String  @id @default(uuid()) @db.Uuid
+  taskCode    String? @unique
+  title       String
+  description String?
+
+  projectId String  @db.Uuid
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  workspaceId String    @db.Uuid
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  status   Status   @default(TODO)
+  priority Priority @default(MEDIUM)
+
+  assignedToId String? @db.Uuid
+  assignedTo   User?   @relation("TaskAssignedTo", fields: [assignedToId], references: [id])
+
+  createdById String @db.Uuid
+  createdBy   User   @relation("TaskCreatedBy", fields: [createdById], references: [id])
+
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Role {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        Roles         @unique
+  // Postgres: enum arrays are supported by Prisma
+  permissions Permissions[]
+
+  members Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  workspaceId String    @db.Uuid
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  roleId String @db.Uuid
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Optional: prevent duplicate membership
+  @@unique([userId, workspaceId])
+}
+
+
+
