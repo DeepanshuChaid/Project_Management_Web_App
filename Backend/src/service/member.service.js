@@ -1,4 +1,4 @@
-import prisma from "../prisma"
+import prisma from "../prisma.js"
 
 export const getMemberRoleInWorkspace = async (userId, workspaceId) => {
   const workspace = await prisma.workspace.findUnique({
@@ -7,15 +7,18 @@ export const getMemberRoleInWorkspace = async (userId, workspaceId) => {
 
   if (!workspace) throw new Error("Workspace not found")
 
-  const member = await prisma.member.findFirst({
+  const member = await prisma.member.findUnique({
     where: {
-      userId,
-      workspaceId
+      userId_workspaceId: {
+        userId: "a6de6b39-baf4-4bd9-a813-5d062e9e4149",
+        workspaceId: "07b5f8bb-9c9a-44f3-8dcd-dc67648ac140"
+      }
     },
     include: {
       role: true
     }
   })
+  console.log(member)
 
   if (!member) throw new Error("Member not found")
 
@@ -24,3 +27,4 @@ export const getMemberRoleInWorkspace = async (userId, workspaceId) => {
   return {role: roleName}
   
 }
+
