@@ -66,6 +66,7 @@ app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`)
   const data = await prisma.user.findMany({include: {accounts: true, workspaces: true}})
   console.log(data)
+  console.log(data[0].workspaces)
   console.log("Backend Callback", config.GOOGLE_CALLBACK_URL)
 
 })

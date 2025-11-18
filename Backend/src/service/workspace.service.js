@@ -1,4 +1,5 @@
 import prisma from "../prisma.js"
+import { generateInviteCode } from "../utils/uuid.js"
 
 export const createWorkspaceService = async (userId, body) => {
   const {name, description} = body;
@@ -10,7 +11,7 @@ export const createWorkspaceService = async (userId, body) => {
 
   if (!user) throw new Error("User not found")
 
-  const ownerRole = await prisma.role.findOne({
+  const ownerRole = await prisma.role.findUnique({
     where: {name: "OWNER"}
   })
 
@@ -22,6 +23,7 @@ export const createWorkspaceService = async (userId, body) => {
       owner: {connect: {id: userId}},
       name: name || `${user.name}'s Workspace`,
       description: description || `Workspace created for ${user.name}`,
+      inviteCode: generateInviteCode()
     }
   })
 
@@ -51,9 +53,30 @@ export const getAllUserWorkspacesUserIsMemberService = async (userId) => {
   })
 
   const workspaces = memberships.map((membership) => {
-    membership.workspaceId
+    membership.workspace
   })
 
   return {workspaces}
+  
+}
+
+
+
+export const getWorkspaceByIdService = async (workspaceId) => {
+  const workspace = await prisma.workspace.findUnique({
+    where: {id: workspaceId},
+    include: {
+      members: {
+        include: {
+          user: true,
+          role: true
+        }
+      }
+    }
+  })
+
+  if (!workspace) throw new Error("Workspace not found")
+
+  return {workspace}
   
 }

@@ -4,6 +4,11 @@ export const nameScehma = z.string().min(3, {message: "Name must be at least 3 c
 
 export const descriptionSchema = z.string().trim().optional();
 
+export const workspaceIdSchema = z
+.string()
+.trim()
+.min(1, { message: "Workspace ID is required" });
+
 export const createWorkspaceSchema = z.object({
   name: nameScehma,
   description: descriptionSchema,
