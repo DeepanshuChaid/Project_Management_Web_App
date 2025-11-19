@@ -153,10 +153,10 @@ model Task {
   priority Priority @default(MEDIUM)
 
   assignedToId String? @db.Uuid
-  assignedTo   User?   @relation("TaskAssignedTo", fields: [assignedToId], references: [id])
+  assignedTo   User?   @relation("TaskAssignedTo", fields: [assignedToId], references: [id], onDelete: Cascade)
 
   createdById String @db.Uuid
-  createdBy   User   @relation("TaskCreatedBy", fields: [createdById], references: [id])
+  createdBy   User   @relation("TaskCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
 
   dueDate   DateTime?
   createdAt DateTime  @default(now())
@@ -184,7 +184,7 @@ model Member {
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   roleId String @db.Uuid
-  role   Role   @relation(fields: [roleId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   joinedAt  DateTime @default(now())
   createdAt DateTime @default(now())
