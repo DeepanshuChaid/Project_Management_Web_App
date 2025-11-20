@@ -5,11 +5,13 @@ import {
   getAllUserWorkspacesUserIsMemberService,
   getWorkspaceAnalyticsService,
   getWorkspaceMemberService,
+  updateWorkspaceByIdService
 } from "../service/workspace.service.js";
 import {
     changeRoleSchema,
   createWorkspaceSchema,
   workspaceIdSchema,
+  updateWorkspaceSchema
 } from "../validation/workspace.validation.js";
 import { getMemberRoleInWorkspace } from "../service/member.service.js";
 import { getWorkspaceByIdService } from "../service/workspace.service.js";
@@ -150,4 +152,41 @@ export const changeWorkspaceMemberRoleController = asyncHandler(async (req, res)
     member
   })
   
+})
+
+
+// UPDATE WORKSPACE CONTROLLER
+export const updateWorkspaceByIdController = asyncHandler(async (req, res) => {
+  const workspaceId = workspaceIdSchema.parse(req.params.id)
+  const {name, description} = updateWorkspaceSchema.parse(req.body)
+
+  const userId = req.user.id
+
+  const {role} = await getMemberRoleInWorkspace(userId, workspaceId)
+  roleGaurd(role, ["EDIT_WORKSPACE"])
+
+  const {workspace} = await updateWorkspaceByIdService(workspaceId, name, description)
+
+  return res.status(HTTPSTATUS.OK).json({
+    message: "Workspace updated successfully",
+    workspace
+  })
+})
+
+
+
+// Deleete workspace controller
+export const deleteWorkspaceByIdController = asyncHandler(async (req, res) => {
+   const workspaceId = workspaceIdSchema.parse(req.params.id)
+   const userId = req.user.id
+
+   const {role} = await getMemberRoleInWorkspace(userId, workspaceId)
+   roleGaurd(role, ["DELETE_WORKSPACE"])
+
+  const {currentWorkspace} = await deleteWorkspaceByIdService(workspaceId, userId)
+
+  res.status(HTTPSTATUS.OK).json({
+    message: "Workspace deleted successfully",
+    currentWorkspace
+  })
 })

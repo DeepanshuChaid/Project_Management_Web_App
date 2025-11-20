@@ -1,20 +1,32 @@
-import {Router} from "express"
-import {createWorkspaceController, getAllUserWorkspacesUserIsMemberController, getWorkspaceAnalyticsController, getWorkspaceByIdController, getWorkspaceMembersController, changeWorkspaceMemberRoleController} from  "../controllers/workspace.controller.js"
+import { Router } from "express";
+import {
+  createWorkspaceController,
+  getAllUserWorkspacesUserIsMemberController,
+  getWorkspaceAnalyticsController,
+  getWorkspaceByIdController,
+  getWorkspaceMembersController,
+  changeWorkspaceMemberRoleController,
+  updateWorkspaceByIdController,
+  deleteWorkspaceByIdController
+} from "../controllers/workspace.controller.js";
 
-const workspaceRoutes = Router()
+const workspaceRoutes = Router();
 
-workspaceRoutes.post("/create/new", createWorkspaceController)
-workspaceRoutes.put("/change/member/role/:id", changeWorkspaceMemberRoleController)
+workspaceRoutes.post("/create/new", createWorkspaceController);
+workspaceRoutes.put("/update/:id", updateWorkspaceByIdController);
 
+workspaceRoutes.put(
+  "/change/member/role/:id",
+  changeWorkspaceMemberRoleController,
+);
 
-workspaceRoutes.get("/all", getAllUserWorkspacesUserIsMemberController)
-workspaceRoutes.get("/members/:id", getWorkspaceMembersController)
+workspaceRoutes.delete("/delete/:id", deleteWorkspaceByIdController);
 
+workspaceRoutes.get("/all", getAllUserWorkspacesUserIsMemberController);
+workspaceRoutes.get("/members/:id", getWorkspaceMembersController);
 
+workspaceRoutes.get("/analytics/:id", getWorkspaceAnalyticsController);
 
-workspaceRoutes.get("/analytics/:id", getWorkspaceAnalyticsController)
+workspaceRoutes.get("/:id", getWorkspaceByIdController);
 
-workspaceRoutes.get("/:id", getWorkspaceByIdController)
-
-export default workspaceRoutes
-
+export default workspaceRoutes;

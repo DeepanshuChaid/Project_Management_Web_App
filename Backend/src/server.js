@@ -12,6 +12,7 @@ import prisma from "./prisma.js"
 import userRoutes from "./routes/user.routes.js"
 import isAuthenticatedMiddleware from "./middleware/isAuthenticatedMiddleware.js"
 import workspaceRoutes from "./routes/workspace.routes.js"
+import memberRoutes from "./routes/member.routes.js"
 
 
 const BASE_PATH = config.BASE_PATH
@@ -54,8 +55,8 @@ app.use(errorHandlerMiddleware)
 
 app.use(`${BASE_PATH}/auth`, authRoutes)
 app.use(`${BASE_PATH}/user`, isAuthenticatedMiddleware, userRoutes)
-
 app.use(`${BASE_PATH}/workspace`, isAuthenticatedMiddleware, workspaceRoutes)
+app.use(`${BASE_PATH}/member`, isAuthenticatedMiddleware, memberRoutes)
 
 
 app.get("/", (req, res) => {

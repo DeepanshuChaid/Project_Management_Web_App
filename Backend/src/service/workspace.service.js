@@ -154,5 +154,27 @@ export const changeMemberRoleService = async (
 
 
 //  ************************************* //
+// UPDATE WORKSPACE BY ID
+// ************************************* //
+export const updateWorkspaceByIdService = async (workspaceId, name, description) => {
+  const workspace = await prisma.workspace.update({
+    where: {id: workspaceId},
+    data: {name, description}
+  })
 
+  if (!workspace) throw new Error("Workspace not found check updateWorkspaceByIdService")
+
+  return {workspace}
+}
+
+
+//  ************************************* //
+// DELETE WORKSPACE BY ID
+// ************************************* //
+export const deleteWorkspaceByIdService = async (workspaceId, userId) => {
+  const currentWorkspace = await prisma.workspace.delete({
+    where: {id: workspaceId}
+  })
+
+}
 
