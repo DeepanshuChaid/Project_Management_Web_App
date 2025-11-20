@@ -176,5 +176,8 @@ export const deleteWorkspaceByIdService = async (workspaceId, userId) => {
     where: {id: workspaceId}
   })
 
+  if (!currentWorkspace) throw new Error("Workspace not found check deleteWorkspaceByIdService")
+
+  return {currentWorkspace}
 }
 

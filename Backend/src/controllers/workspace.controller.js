@@ -5,7 +5,8 @@ import {
   getAllUserWorkspacesUserIsMemberService,
   getWorkspaceAnalyticsService,
   getWorkspaceMemberService,
-  updateWorkspaceByIdService
+  updateWorkspaceByIdService,
+  deleteWorkspaceByIdService,
 } from "../service/workspace.service.js";
 import {
     changeRoleSchema,
