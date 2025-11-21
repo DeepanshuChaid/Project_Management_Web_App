@@ -16,7 +16,7 @@ export const createProjectController = asyncHandler(async (req, res) => {
   const role = await getMemberRoleInWorkspace(userId, workspaceId)
   roleGaurd(role, ["CREATE_PROJECT"])
 
-  const {project} = await createProjectService(userId, workspaceId, body)
+  const { project } = await createProjectService(userId, workspaceId, body)
 
   return res.status(HTTPSTATUS.CREATED).json({
     message: "Project created successfully",

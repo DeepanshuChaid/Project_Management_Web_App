@@ -172,11 +172,19 @@ export const updateWorkspaceByIdService = async (workspaceId, name, description)
 // DELETE WORKSPACE BY ID
 // ************************************* //
 export const deleteWorkspaceByIdService = async (workspaceId, userId) => {
+
+   const workspace = await prisma.workspace.findUnique({
+     where: {id: workspaceId}
+   })
+
+  if (!workspace) throw new Error("Workspace not found check deleteWorkspaceByIdService")
+
+  if (workspace.ownerId !== userId) throw new Error("You are not the owner of this workspace")
+
+  
   const currentWorkspace = await prisma.workspace.delete({
     where: {id: workspaceId}
   })
-
-  if (!currentWorkspace) throw new Error("Workspace not found check deleteWorkspaceByIdService")
 
   return {currentWorkspace}
 }
