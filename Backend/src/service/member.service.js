@@ -24,6 +24,8 @@ export const getMemberRoleInWorkspace = async (userId, workspaceId) => {
 
   const roleName = member.role?.name;
 
+  if (!roleName) throw new Error("Role not found");
+
   return { role: roleName };
 };
 
@@ -63,3 +65,6 @@ export const joinWorkspaceByInviteService = async (userId, inviteCode) => {
 
   return { workspaceId: workspace.id, role: role.name };
 };
+
+
+
