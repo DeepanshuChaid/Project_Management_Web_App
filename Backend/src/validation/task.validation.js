@@ -9,11 +9,15 @@ export const assignedToSchema = z.string().min(1).trim().nullable().optional();
 export const prioritySchema = z.enum(["LOW", "MEDIUM", "HIGH"]);
 
 const dueDateSchema = z.string().trim().optional().refine(
-  (val) => !val || !isNaN(Date.parse(val)),
+  (val) => {
+    return !val || !isNaN(Date.parse(val));
+  }, 
   {
-    message: "Invalid date format. please provide a valid date",
+    message: "Invalid date format. Please use YYYY-MM-DD"
   }
-);
+)
+
+export const taskIdSchema = z.string().trim().min(2);
 
 export const statusSchema = z.enum([
   "BACKLOG",

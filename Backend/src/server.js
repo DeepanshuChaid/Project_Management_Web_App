@@ -14,6 +14,7 @@ import isAuthenticatedMiddleware from "./middleware/isAuthenticatedMiddleware.js
 import workspaceRoutes from "./routes/workspace.routes.js";
 import memberRoutes from "./routes/member.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import taskRoutes from "./routes/task.routes.js";
 
 const BASE_PATH = config.BASE_PATH;
 
@@ -58,6 +59,7 @@ app.use(`${BASE_PATH}/user`, isAuthenticatedMiddleware, userRoutes);
 app.use(`${BASE_PATH}/workspace`, isAuthenticatedMiddleware, workspaceRoutes);
 app.use(`${BASE_PATH}/member`, isAuthenticatedMiddleware, memberRoutes);
 app.use(`${BASE_PATH}/project`, isAuthenticatedMiddleware, projectRoutes);
+app.use(`${BASE_PATH}/task`, isAuthenticatedMiddleware, taskRoutes)
 
 app.get("/", (req, res) => {
   res.send("Hello World");
