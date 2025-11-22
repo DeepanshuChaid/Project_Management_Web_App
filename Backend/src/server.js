@@ -68,10 +68,10 @@ app.listen(PORT, async () => {
   const data = await prisma.user.findMany({
     include: { accounts: true, workspaces: { include: { members: true, projects: true } } },
   });
-  console.log(data);
-  console.log(data[1].workspaces[0]);
-  console.log(data[1].workspaces[0].members);
-  console.log("Backend Callback", config.GOOGLE_CALLBACK_URL);
+  // console.log(data);
+  // console.log(data[1].workspaces[0]);
+  // console.log(data[1].workspaces[0].members);
+  // console.log("Backend Callback", config.GOOGLE_CALLBACK_URL);
 
   // const projects = await prisma.project.findMany({
   //   where: { workspaceId: "ad806b79-f60a-4c43-8d94-36953764ec13" },
@@ -83,4 +83,14 @@ app.listen(PORT, async () => {
   //   }
   // })
   // console.log(projects)
+
+  // const project = await prisma.project.findFirst({
+  //   where: {
+  //     id: "fbe31699-6ffa-4f2d-a8d2-7f5628cb801a",
+  //     workspaceId: "ad806b79-f60a-4c43-8d94-36953764ec13",
+  //   },
+  // });
+
+  // console.log(project)
+  
 });

@@ -3,6 +3,9 @@ import {
   createProjectController,
   getAllProjectsInWorkspaceController,
   getProjectByIdAndWorkspaceIdController,
+  getProjectAnalyticsController,
+  updateProjectByIdController,
+  deleteProjectByIdController
 } from "../controllers/project.controller.js";
 
 const projectRoutes = Router();
@@ -14,6 +17,18 @@ projectRoutes.get(
   getAllProjectsInWorkspaceController,
 );
 
-projectRoutes.get("/:id/workspace/:workspaceId", getProjectByIdAndWorkspaceIdController);
+projectRoutes.put("/:id/workspace/:workspaceId/update", updateProjectByIdController)
+
+projectRoutes.delete("/:id/workspace/:workspaceId/delete", deleteProjectByIdController)
+
+projectRoutes.get(
+  "/:id/workspace/:workspaceId/analytics",
+  getProjectAnalyticsController,
+);
+
+projectRoutes.get(
+  "/:id/workspace/:workspaceId",
+  getProjectByIdAndWorkspaceIdController,
+);
 
 export default projectRoutes;

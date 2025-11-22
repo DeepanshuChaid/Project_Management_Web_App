@@ -65,6 +65,7 @@ export const getWorkspaceByIdService = async (workspaceId) => {
           role: true,
         },
       },
+      projects: true
     },
   });
 

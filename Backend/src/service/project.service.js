@@ -22,7 +22,8 @@ export const getAllProjectsInWorkspaceService = async (
   pageSize,
   pageNumber,
 ) => {
-  const skip = (pageNumber - 1) * pageSize;
+  const skip = (pageNumber - 1) / pageSize;
+  if (skip < 0) skip === 0;
   const projects = await prisma.project.findMany({
     where: { workspaceId },
     skip,
@@ -44,12 +45,109 @@ export const getAllProjectsInWorkspaceService = async (
   return { projects, totalPages, totalCount, skip };
 };
 
+export const getProjectByIdAndWorkspaceIdService = async (
+  projectId,
+  workspaceId,
+) => {
+  const project = await prisma.project.findMany({
+    where: { id: projectId, workspaceId },
+  });
+
+  if (!project) throw new Error("Project not found");
+
+  return { project };
+};
 
 
 
-export const getProjectByIdAndWorkspaceIdService = async (projectId, workspaceId) => {
-  const project = await prisma.project.findUnique({
-    where: {id: projectId, workspaceId},
+export const getProjectAnalyticsService = async (
+  workspaceId,
+  projectId
+) => {
+  // First, verify the project exists and belongs to workspace
+  const project = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+      workspaceId: workspaceId,
+    },
+  });
+
+  if (!project) {
+    throw new Error(
+      "Project not found or does not belong to this workspace"
+    );
+  }
+
+  const currentDate = new Date();
+
+  // Run all three counts in parallel using Promise.all
+  const [totalTasks, overdueTasks, completedTasks] = await Promise.all([
+    // Count all tasks in project
+    prisma.task.count({
+      where: {
+        projectId: projectId,
+      },
+    }),
+
+    // Count overdue tasks (past due date AND not done)
+    prisma.task.count({
+      where: {
+        projectId: projectId,
+        dueDate: {
+          lt: currentDate,  // less than current date
+        },
+        status: {
+          not: "DONE",
+        },
+      },
+    }),
+
+    // Count completed tasks
+    prisma.task.count({
+      where: {
+        projectId: projectId,
+        status: "DONE",
+      },
+    }),
+  ]);
+
+  return {
+    analytics: {
+      totalTasks,
+      overdueTasks,
+      completedTasks,
+    },
+  };
+};
+
+
+
+export const updateProjectByIdService = async (workspaceId, projectId, body) => {
+  const {name, description, emoji} = body;
+
+  const project = await prisma.project.update({
+    where: {
+      id: projectId,
+      workspaceId: workspaceId,
+    }, 
+    data: {
+      name,
+      description,  
+      emoji
+    }
+  })
+
+  return {project}
+}
+
+
+
+export const deleteProjectByIdService = async (workspaceId, projectId) => {
+  const project = await prisma.project.delete({
+    where: {
+      id: projectId,
+      workspaceId: workspaceId,
+    }
   })
 
   if (!project) throw new Error("Project not found")
