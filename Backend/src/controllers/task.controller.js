@@ -10,9 +10,9 @@ import HTTPSTATUS from "../configs/http.config.js";
 
 export const createTaskController = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const body = createTaskSchema(req.body);
-  const projectId = projectIdSchema(req.params.projectId);
-  const workspaceId = workspaceIdSchema(req.params.workspaceId);
+  const body = createTaskSchema.parse(req.body);
+  const projectId = projectIdSchema.parse(req.params.projectId);
+  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
 
   const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
   roleGaurd(role, ["CREATE_TASK"]);
@@ -24,3 +24,6 @@ export const createTaskController = asyncHandler(async (req, res) => {
     task
   })
 });
+
+
+

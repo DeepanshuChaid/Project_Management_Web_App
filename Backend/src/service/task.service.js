@@ -5,10 +5,12 @@ export const createTaskService = async (userId, workspaceId, projectId, body) =>
 
     // Check if assigned user is part of workspace
     if (assignedTo) {
-      const isAssignedToMember = await prisma.member.findFirst({
+      const isAssignedToMember = await prisma.member.findUnique({
         where: {
-          userId: assignedTo,
-          workspaceId: workspaceId
+          userId_workspaceId: {
+            userId,
+            workspaceId,
+          },
         }
       });
 
