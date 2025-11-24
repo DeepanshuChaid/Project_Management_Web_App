@@ -22,7 +22,8 @@ export const getAllProjectsInWorkspaceService = async (
   pageSize,
   pageNumber,
 ) => {
-  const skip = (pageNumber - 1) / pageSize;
+  const skip = (pageNumber - 1) * pageSize;
+  
   if (skip < 0) skip === 0;
   const projects = await prisma.project.findMany({
     where: { workspaceId },

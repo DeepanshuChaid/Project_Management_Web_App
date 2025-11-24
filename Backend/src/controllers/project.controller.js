@@ -14,7 +14,7 @@ import {
   getProjectByIdAndWorkspaceIdService,
   getProjectAnalyticsService,
   updateProjectByIdService,
-  deleteProjectByIdService
+  deleteProjectByIdService,
 } from "../service/project.service.js";
 
 export const createProjectController = asyncHandler(async (req, res) => {
@@ -47,7 +47,7 @@ export const getAllProjectsInWorkspaceController = asyncHandler(
     roleGaurd(role, ["VIEW_ONLY"]);
 
     const pageSize = parseInt(req.query.pageSize) || 10;
-    const pageNumber = parseInt(req.query.pageNumber) || 10;
+    const pageNumber = parseInt(req.query.pageNumber) || 1;
 
     const { projects, totalCount, totalPages, skip } =
       await getAllProjectsInWorkspaceService(workspaceId, pageSize, pageNumber);
@@ -79,75 +79,76 @@ export const getProjectByIdAndWorkspaceIdController = asyncHandler(
     const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
     roleGaurd(role, ["VIEW_ONLY"]);
 
-    const { project } = await getProjectByIdAndWorkspaceIdService(projectId, workspaceId)
+    const { project } = await getProjectByIdAndWorkspaceIdService(
+      projectId,
+      workspaceId,
+    );
 
-    if (!project) throw new Error("Project not found")
+    if (!project) throw new Error("Project not found");
 
     return res.status(HTTPSTATUS.OK).json({
       message: "Project fetched successfully",
       project,
-    })
+    });
   },
 );
-
 
 //  ********************************** //
 // GET PROJECT ANALYTICS
 // *********************************** //
 export const getProjectAnalyticsController = asyncHandler(async (req, res) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId)
-  const projectId = projectIdSchema.parse(req.params.id)
-  const userId = req.user.id
+  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+  const projectId = projectIdSchema.parse(req.params.id);
+  const userId = req.user.id;
 
-  const {role} = await getMemberRoleInWorkspace(userId, workspaceId)
-  roleGaurd(role, ["VIEW_ONLY"])
+  const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+  roleGaurd(role, ["VIEW_ONLY"]);
 
-  const {analytics} = await getProjectAnalyticsService(workspaceId, projectId)
+  const { analytics } = await getProjectAnalyticsService(
+    workspaceId,
+    projectId,
+  );
 
   return res.status(HTTPSTATUS.OK).json({
     message: "Project analytics fetched successfully",
-    analytics
-  })
-})
-
-
+    analytics,
+  });
+});
 
 export const updateProjectByIdController = asyncHandler(async (req, res) => {
-   const workspaceId = workspaceIdSchema.parse(req.params.workspaceId)
-   const projectId = projectIdSchema.parse(req.params.id)
-  const userId = req.user.id
+  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+  const projectId = projectIdSchema.parse(req.params.id);
+  const userId = req.user.id;
 
-  const body = updateProjectSchema.parse(req.body)
+  const body = updateProjectSchema.parse(req.body);
 
-  const {role} = await getMemberRoleInWorkspace(userId, workspaceId)
-  roleGaurd(role, ["EDIT_PROJECT"])
+  const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+  roleGaurd(role, ["EDIT_PROJECT"]);
 
-  const {project} = await updateProjectByIdService(workspaceId, projectId, body)
+  const { project } = await updateProjectByIdService(
+    workspaceId,
+    projectId,
+    body,
+  );
 
   return res.status(HTTPSTATUS.OK).json({
     message: "Project updated successfully",
-    project
-  })
-  
-})
-
+    project,
+  });
+});
 
 export const deleteProjectByIdController = asyncHandler(async (req, res) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId)
-  const projectId = projectIdSchema.parse(req.params.id)
-  const userId = req.user.id
+  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+  const projectId = projectIdSchema.parse(req.params.id);
+  const userId = req.user.id;
 
-  const {role} = await getMemberRoleInWorkspace(userId, workspaceId)
-  roleGaurd(role, ["DELETE_PROJECT"])
+  const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+  roleGaurd(role, ["DELETE_PROJECT"]);
 
-  const {project} = await deleteProjectByIdService(workspaceId, projectId)
+  const { project } = await deleteProjectByIdService(workspaceId, projectId);
 
   return res.status(HTTPSTATUS.OK).json({
     message: "Project deleted successfully",
-    project
-  })
-})
-
-
-
-
+    project,
+  });
+});
