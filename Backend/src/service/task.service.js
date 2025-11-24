@@ -166,3 +166,62 @@ export const getAllTaskService = async (workspaceId, filter, pagination) => {
     },
   };
 };
+
+//  ********************************** //
+// GET TASK BY ID
+// *********************************** //
+export const getTaskByIdService = async (workspaceId, projectId, taskId) => {
+  const project = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+      workspaceId: workspaceId,
+    },
+  })
+
+  if (!project) throw new Error("Project not found")
+
+  
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId,
+      projectId,
+      workspaceId,
+    }, 
+    include: {
+      createdBy: true,
+      assignedTo: true,
+      project: true
+    }
+  })
+
+  if (!task) throw new Error("Task not found")
+
+  return {task}
+}
+
+
+//  ********************************** //
+// DELETE TASK BY ID
+// *********************************** //
+export const deleteTaskService = async (workspaceId, projectId, taskId) => {
+  const project = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+      workspaceId: workspaceId,
+    },
+  })
+
+  if (!project) throw new Error("Project not found")
+
+  const task = await prisma.task.delete({
+    where: {
+      id: taskId,
+      projectId,
+      workspaceId,
+    },
+  })
+
+  if (!task) throw new Error("Task not found")
+
+  return { task }
+}
