@@ -6,8 +6,6 @@ import { loginOrCreateAccountService, verfiyUserService } from '../service/auth.
 import prisma from "../prisma.js"
 import { Strategy as LocalStrategy } from 'passport-local';
 
-console.log(' GOOGLE STRTEGY LOADED')
-
 // Configure Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
@@ -55,7 +53,7 @@ passport.use(
     }
   )
 );
-
+d
 passport.use(new LocalStrategy(
   {
     usernameField: 'email',
@@ -132,8 +130,5 @@ passport.deserializeUser(async (id, done) => {
 export default passport;
 
 
-// passport.serializeUser((user, done) => done(null, user))
-
-// passport.deserializeUser((user, done) => done(null, user))
 
 
