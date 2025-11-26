@@ -53,7 +53,7 @@ passport.use(
     }
   )
 );
-d
+
 passport.use(new LocalStrategy(
   {
     usernameField: 'email',
