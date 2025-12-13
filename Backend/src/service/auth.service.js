@@ -205,11 +205,12 @@ export const registerUserService = async (data) => {
 
 
 // verfiy user service
-export const verfiyUserService = async (email, password, provider = "EMAIL") => {
-  const account = await prisma.account.findUnique({
+export const verifyUserService = async (email, password, provider = "EMAIL") => {
+  
+  const account = await prisma.account.findFirst({
     where: {
-        provider,
-        providerId: email
+      provider,
+      providerId: email
     },
     include: {
       user: true

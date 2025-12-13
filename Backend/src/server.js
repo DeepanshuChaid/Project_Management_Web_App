@@ -43,16 +43,15 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      secure: config.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production" ? false : true,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
     },
   }),
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(errorHandlerMiddleware);
 
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, isAuthenticatedMiddleware, userRoutes);
@@ -60,6 +59,8 @@ app.use(`${BASE_PATH}/workspace`, isAuthenticatedMiddleware, workspaceRoutes);
 app.use(`${BASE_PATH}/member`, isAuthenticatedMiddleware, memberRoutes);
 app.use(`${BASE_PATH}/project`, isAuthenticatedMiddleware, projectRoutes);
 app.use(`${BASE_PATH}/task`, isAuthenticatedMiddleware, taskRoutes)
+
+app.use(errorHandlerMiddleware);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -75,16 +76,16 @@ app.listen(PORT, async () => {
   // console.log(data[1].workspaces[0].members);
   // console.log("Backend Callback", config.GOOGLE_CALLBACK_URL);
 
-  // const projects = await prisma.project.findMany({
-  //   where: { workspaceId: "ad806b79-f60a-4c43-8d94-36953764ec13" },
-  //   orderBy: { createdAt: "desc" }, 
-  //   include: {
-  //     createdBy: true,
-  //     workspace: true,
-  //     tasks: true,
-  //   }
-  // })
-  // console.log(projects)
+  const projects = await prisma.project.findMany({
+    where: { workspaceId: "ad806b79-f60a-4c43-8d94-36953764ec13" },
+    orderBy: { createdAt: "desc" }, 
+    include: {
+      createdBy: true,
+      workspace: true,
+      tasks: true,
+    }
+  })
+  console.log(projects)
 
   // const project = await prisma.project.findFirst({
   //   where: {

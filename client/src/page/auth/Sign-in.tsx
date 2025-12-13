@@ -65,7 +65,7 @@ const SignIn = () => {
       onError: (error) => {
         toast({
           title: "Error",
-          description: error.message,
+          description: JSON.stringify(error.message),
           variant: "destructive",
         });
       },
@@ -189,3 +189,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+

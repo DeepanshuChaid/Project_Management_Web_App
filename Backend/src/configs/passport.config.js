@@ -2,7 +2,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { config } from './app.config.js';
-import { loginOrCreateAccountService, verfiyUserService } from '../service/auth.service.js';
+import { loginOrCreateAccountService, verifyUserService } from '../service/auth.service.js';
 import prisma from "../prisma.js"
 import { Strategy as LocalStrategy } from 'passport-local';
 
@@ -62,7 +62,7 @@ passport.use(new LocalStrategy(
   }, 
   async (email, password, done) => {
     try {
-      const user = await verfiyUserService(email, password)
+      const user = await verifyUserService(email, password)
       return done(null, user)
     } catch (error) {
       return done(error, false, {message: error.message})

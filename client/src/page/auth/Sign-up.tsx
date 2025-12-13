@@ -63,7 +63,7 @@ const SignUp = () => {
         console.log(error);
         toast({
           title: "Error",
-          description: error.message,
+          description: JSON.stringify(error.message),
           variant: "destructive",
         });
       },
