@@ -43,7 +43,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      secure: config.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
       sameSite: "none",
     },
@@ -52,6 +52,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.set("trust proxy", 1);
 
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, isAuthenticatedMiddleware, userRoutes);

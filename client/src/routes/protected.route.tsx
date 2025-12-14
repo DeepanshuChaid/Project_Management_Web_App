@@ -5,9 +5,7 @@ import { Navigate, Outlet } from "react-router-dom";
 const ProtectedRoute = () => {
   const { data: authData, isLoading } = useAuth();
 
-  async function getUser() {
-    const response = await fetch("/api/auth/user");
-  }
+  const user = authData?.user
 
   if (isLoading) {
     return <DashboardSkeleton />;
