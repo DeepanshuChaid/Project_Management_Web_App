@@ -68,6 +68,8 @@ app.use(`${BASE_PATH}/member`, isAuthenticated, memberRoutes);
 app.use(`${BASE_PATH}/project`, isAuthenticated, projectRoutes);
 app.use(`${BASE_PATH}/task`, isAuthenticated, taskRoutes);
 
+app.set("trust proxy", 1); // trust first proxy
+
 app.use(errorHandler);
 
 app.listen(config.PORT, async () => {
