@@ -4,6 +4,10 @@ modules = ["nodejs-20"]
 expertMode = true
 
 [[ports]]
+localPort = 300
+externalPort = 3002
+
+[[ports]]
 localPort = 3000
 externalPort = 80
 
