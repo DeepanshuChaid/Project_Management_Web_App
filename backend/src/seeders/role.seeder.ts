@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import mongoose from "mongoose";
 import connectDatabase from "../config/database.config";
@@ -43,11 +44,16 @@ const seedRoles = async () => {
     console.log("Session ended.");
 
     console.log("Seeding completed successfully.");
+
+    // CLOSE DB CONNECTION AND EXIT
+    await mongoose.connection.close();
+    console.log("Mongo connection closed.");
+    process.exit(0);
   } catch (error) {
     console.error("Error during seeding:", error);
+    await mongoose.connection.close(); // also close on error
+    process.exit(1);
   }
 };
 
-seedRoles().catch((error) =>
-  console.error("Error running seed script:", error)
-);
+seedRoles();
