@@ -16,8 +16,3 @@ A streamlined project management web application built for real-time team collab
 - **Database:** MongoDB
 - **Real-time:** Socket.io
 
-## 🚀 Getting Started
-
-1. **Clone the repo:**
-   ```bash
-   git clone [https://github.com/yourusername/teamsync.git](https://github.com/yourusername/teamsync.git)
